@@ -11,16 +11,6 @@ public class CSVReader : MonoBehaviour
     public string path;
     public string csvName;
 
-    public List<CardData> cardDataList = new List<CardData>();
-    public ScriptableObjectUtility scriptableObjectUtility;
-
-    void Start()
-    {
-        //SetCSVData();
-
-        scriptableObjectUtility.CreateAsset<CardScriptableObject>(GetCSVData());
-    }
-
     public CardScriptableObject GetCSVData()
     {
         CardScriptableObject cardScriptableObject = new CardScriptableObject();
@@ -51,13 +41,4 @@ public class CSVReader : MonoBehaviour
         }
         return cardScriptableObject;
     }
-}
-
-[Serializable]
-public struct CardData
-{
-    public string cardName;
-    public string cardImageName;
-    public int cardPos;
-    public float usedTime;
 }
