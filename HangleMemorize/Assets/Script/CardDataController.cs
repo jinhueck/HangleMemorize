@@ -14,6 +14,7 @@ public class CardDataController : MonoBehaviour
     public ScriptableObjectUtility scriptableObjectUtility;
     public CSVReader csvReader;
 
+    public List<CardData> cardDataList;
     public List<CardData> useCardDataList;
 
     public void SetCardData(int stateNum)
@@ -28,14 +29,14 @@ public class CardDataController : MonoBehaviour
         switch(state)
         {
             case DataState.State_NewData:
-                useCardDataList = csvCardDataList;
+                cardDataList = csvCardDataList;
                 break;
 
             case DataState.State_SaveData:
                 List<CardData> removeDataList = saveCardDataList.Except(csvCardDataList).ToList();
-                useCardDataList = saveCardDataList.Except(removeDataList).ToList();
-                useCardDataList.AddRange(csvCardDataList);
-                useCardDataList = useCardDataList.Distinct().ToList();
+                cardDataList = saveCardDataList.Except(removeDataList).ToList();
+                cardDataList.AddRange(csvCardDataList);
+                cardDataList = cardDataList.Distinct().ToList();
                 break;
         }
     }

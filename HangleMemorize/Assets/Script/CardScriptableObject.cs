@@ -15,5 +15,5 @@ public struct CardData
     public string cardName;
     public string cardImageName;
     public int cardPos;
-    public float usedTime;
+    public string usedTime;
 }
