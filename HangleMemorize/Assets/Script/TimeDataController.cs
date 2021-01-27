@@ -13,11 +13,6 @@ public class TimeDataController : MonoBehaviour
     public string jsonFilePath;
     public string jsonFileName;
 
-    private void Start()
-    {
-        LoadCoolTimeInfo();
-    }
-
     public void LoadCoolTimeInfo()
     {
         var loadData = jsonController.LoadJsonFile<CoolTimeScriptableObject>(jsonFilePath, jsonFileName);
