@@ -14,6 +14,9 @@ public class Scene_End : SceneBase
     [SerializeField] private float playTime = 0f;
     [SerializeField] private float presentTime = 0f;
 
+    public CardDataController cardDataController;
+    public TimeDataController timeDataController;
+
     public override void InitScene()
     {
         playTime = (float)playableDirector.duration;
@@ -27,6 +30,8 @@ public class Scene_End : SceneBase
 
     public override void SceneEnd()
     {
+        cardDataController.DeleteJsonFile();
+        timeDataController.DeleteJsonFile();
         actionForNextScene(0);
     }
 

@@ -1938,6 +1938,8 @@ MonoBehaviour:
   skipButton: {fileID: 0}
   playTime: 0
   presentTime: 0
+  cardDataController: {fileID: 534056940}
+  timeDataController: {fileID: 450047728}
 --- !u!320 &599748687
 PlayableDirector:
   m_ObjectHideFlags: 0
