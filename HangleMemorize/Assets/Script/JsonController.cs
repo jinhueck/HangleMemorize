@@ -39,4 +39,16 @@ public class JsonController : MonoBehaviour
         string jsonData = Encoding.UTF8.GetString(data);
         return JsonUtility.FromJson<T>(jsonData);
     }
+
+    public void DeleteJsonFile(string deletePath, string fileName)
+    {
+        string pathInfo = string.Format("{0}/{1}/{2}.json", Application.dataPath, deletePath, fileName);
+        if (File.Exists(pathInfo))
+        {
+            File.Delete(pathInfo);
+#if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+#endif
+        }
+    }
 }

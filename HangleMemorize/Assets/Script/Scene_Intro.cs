@@ -9,11 +9,15 @@ public class Scene_Intro : SceneBase
     public Button startButton_New;
     public Button startButton_Prev;
     public CardDataController cardDataController;
+    public TimeDataController timeDataController;
 
     public override void InitScene()
     {
         startButton_New.onClick.AddListener(() =>
         {
+            cardDataController.DeleteJsonFile();
+            timeDataController.DeleteJsonFile();
+
             cardDataController.SetCardData(0);
             actionForNextScene(1);
         });

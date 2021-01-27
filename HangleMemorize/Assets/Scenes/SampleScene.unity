@@ -1813,6 +1813,7 @@ MonoBehaviour:
   startButton_New: {fileID: 1729486155}
   startButton_Prev: {fileID: 988655240}
   cardDataController: {fileID: 534056940}
+  timeDataController: {fileID: 450047728}
 --- !u!1 &562581333
 GameObject:
   m_ObjectHideFlags: 0

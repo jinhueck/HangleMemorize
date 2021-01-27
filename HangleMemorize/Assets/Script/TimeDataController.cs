@@ -45,4 +45,9 @@ public class TimeDataController : MonoBehaviour
         string jsonData = jsonController.ObjectToJson<CoolTimeScriptableObject>(scriptableObject);
         jsonController.CreateJsonFile(jsonFilePath, jsonFileName, jsonData);
     }
+
+    public void DeleteJsonFile()
+    {
+        jsonController.DeleteJsonFile(jsonFilePath, jsonFileName);
+    }
 }

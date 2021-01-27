@@ -82,4 +82,8 @@ public class CardDataController : MonoBehaviour
 
         return totalCount == endCardDataCount;
     }
+    public void DeleteJsonFile()
+    {
+        jsonController.DeleteJsonFile(jsonFilePath, jsonFileName);
+    }
 }
