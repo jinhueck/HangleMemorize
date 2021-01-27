@@ -27,7 +27,9 @@ public class Scene_002 : SceneBase
 
     public override void SceneStart()
     {
-        if(cardDataController.CheckGameEnd())
+        timeDataController.LoadCoolTimeInfo();
+
+        if (cardDataController.CheckGameEnd())
         {
             actionForNextScene(4);
             return;
@@ -37,6 +39,8 @@ public class Scene_002 : SceneBase
         {
             stoneData.cardDataList_Available.Clear();
             stoneData.cardDataList_Unavailable.Clear();
+            stoneData.remainingTime = "";
+            stoneData.button.onClick.RemoveAllListeners();
         }
         totalCardDataList = cardDataController.cardDataList;
         int pos = 0;
