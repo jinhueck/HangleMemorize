@@ -36,6 +36,9 @@ public class CSVReader : MonoBehaviour
                 CardData nCardData = new CardData();
                 nCardData.cardName = data_values[0];
                 nCardData.cardImageName = data_values[1];
+                nCardData.cardPos = int.Parse(data_values[2]);
+                nCardData.usedTime = data_values[3];
+                nCardData.cardInitialName = data_values[4];
                 cardScriptableObject.cardDataList.Add(nCardData);
             }
         }

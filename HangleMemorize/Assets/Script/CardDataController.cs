@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Hardware;
 using UnityEngine;
 
 public enum DataState
@@ -11,7 +12,10 @@ public enum DataState
 
 public class CardDataController : MonoBehaviour
 {
-    public ScriptableObjectUtility scriptableObjectUtility;
+    public JsonController jsonController;
+    public string jsonFilePath;
+    public string jsonFileName;
+    //public ScriptableObjectUtility scriptableObjectUtility;
     public CSVReader csvReader;
 
     public List<CardData> cardDataList;
@@ -22,22 +26,60 @@ public class CardDataController : MonoBehaviour
         DataState state = (DataState)stateNum;
         CardScriptableObject csvSOFile = csvReader.GetCSVData();
         List<CardData> csvCardDataList = csvSOFile.cardDataList;
-        CardScriptableObject saveSOFile = scriptableObjectUtility.GetAssetData<CardScriptableObject>();
-        List<CardData> saveCardDataList = saveSOFile.cardDataList;
+        //CardScriptableObject saveSOFile = scriptableObjectUtility.GetAssetData<CardScriptableObject>();
+        CardScriptableObject saveSOFile = jsonController.LoadJsonFile<CardScriptableObject>(jsonFilePath, jsonFileName);
+        List<CardData> saveCardDataList = null;
+        if (saveSOFile != null)
+        {
+            saveCardDataList = saveSOFile.cardDataList;
+        }
+        else
+        {
+            state = DataState.State_NewData;
+        }
 
 
-        switch(state)
+        switch (state)
         {
             case DataState.State_NewData:
                 cardDataList = csvCardDataList;
                 break;
 
             case DataState.State_SaveData:
-                List<CardData> removeDataList = saveCardDataList.Except(csvCardDataList).ToList();
-                cardDataList = saveCardDataList.Except(removeDataList).ToList();
-                cardDataList.AddRange(csvCardDataList);
-                cardDataList = cardDataList.Distinct().ToList();
+                cardDataList = csvCardDataList;
+                foreach (var saveCardData in saveCardDataList)
+                {
+                    foreach (var cardData in cardDataList)
+                    {
+                        if(cardData.cardName == saveCardData.cardName)
+                        {
+                            cardData.cardPos = saveCardData.cardPos;
+                            cardData.usedTime = saveCardData.usedTime;
+                        }
+                    }   
+                }
                 break;
         }
+    }
+
+    public void SaveCardData()
+    {
+        CardScriptableObject saveCardSOFile = new CardScriptableObject();
+        foreach (var cardData in cardDataList)
+        {
+            saveCardSOFile.cardDataList.Add(cardData);
+        }
+        string nJson = jsonController.ObjectToJson<CardScriptableObject>(saveCardSOFile);
+        jsonController.CreateJsonFile(jsonFilePath, jsonFileName, nJson);
+        //scriptableObjectUtility.CreateAsset<CardScriptableObject>(saveCardSOFile);
+    }
+
+    public bool CheckGameEnd()
+    {
+        int totalCount = cardDataList.Count;
+        var endCardDataList = cardDataList.Where(x => x.cardPos == 5).ToList();
+        int endCardDataCount = endCardDataList.Count;
+
+        return totalCount == endCardDataCount;
     }
 }

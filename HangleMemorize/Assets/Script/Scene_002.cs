@@ -16,6 +16,8 @@ public class Scene_002 : SceneBase
     [SerializeField] private int prevDateSecond;
     [SerializeField] private DateTime presentDateTime;
 
+    public TimeDataController timeDataController;
+
     public override void InitScene()
     {
         DateTime nowTime = DateTime.Now;
@@ -25,23 +27,38 @@ public class Scene_002 : SceneBase
 
     public override void SceneStart()
     {
-        if(totalCardDataList.Count > 0)
+        if(cardDataController.CheckGameEnd())
         {
+            actionForNextScene(4);
             return;
         }
+
+        foreach (var stoneData in stoneDataList)
+        {
+            stoneData.cardDataList_Available.Clear();
+            stoneData.cardDataList_Unavailable.Clear();
+        }
         totalCardDataList = cardDataController.cardDataList;
+        int pos = 0;
+        foreach (var stoneData in stoneDataList)
+        {
+            var soFileData = timeDataController.scriptableObject.stoneCoolTimeInfoList[pos];
+            stoneData.remainingTime = soFileData.prevJoinTime;
+            stoneData.limitTime = soFileData.coolLimit;
+            int presentPos = pos;
+            stoneData.button.onClick.AddListener(() =>
+            {
+                timeDataController.ChangeCoolTimeInfo(presentPos);
+                cardDataController.useCardDataList = stoneData.cardDataList_Available;
+                actionForNextScene(3);
+            });
+            //stoneData.button.enabled = false;
+            pos += 1;
+        }
         for (int i = 0; i < stoneDataList.Count; i++)
         {
             int num = i;
             CreateStoneData(num);
-        }
-        foreach (var stoneData in stoneDataList)
-        {
-            stoneData.button.onClick.AddListener(() =>
-            {
-                cardDataController.useCardDataList = stoneData.cardDataList_Available;
-            });
-            stoneData.button.enabled = false;
         }
     }
 
@@ -88,6 +105,8 @@ public class Scene_002 : SceneBase
     [Serializable]
     public class StoneData
     {
+        private bool bFirst = true;
+
         public Button button;
         public Text buttonText;
         public Text cardInfoText;
@@ -113,25 +132,22 @@ public class Scene_002 : SceneBase
             {
                 DateTime dateTime = DateTime.Parse(remainingTime);
                 TimeSpan gapTime = nowTime - dateTime;
-                if (gapTime.Days > 0)
-                {
-                    bEnableButton = false;
-                }
-                if (gapTime.Hours > 0)
-                {
-                    bEnableButton = false;
-                }
-                if (gapTime.Minutes > 0)
-                {
-                    bEnableButton = false;
-                }
-                if (gapTime.Seconds > 0)
+                int day = 0;
+                int hour = 0;
+                day = gapTime.Days;
+                hour = day * 24 + gapTime.Hours;
+                if (hour * 60 + gapTime.Minutes < limitTime)
                 {
                     bEnableButton = false;
                 }
             }
-
-            if(button.enabled != bEnableButton)
+            if(bFirst == true)
+            {
+                bFirst = false;
+                button.enabled = bEnableButton;
+                buttonText.text = bEnableButton ? "진입 가능" : "진입 불가";
+            }
+            else if(button.enabled != bEnableButton)
             {
                 button.enabled = bEnableButton;
                 buttonText.text = bEnableButton ? "진입 가능" : "진입 불가";
@@ -152,7 +168,7 @@ public class Scene_002 : SceneBase
                 }
 
                 DateTime dateTime = DateTime.Parse(usedTime);
-                TimeSpan gapTime = nowTime - dateTime;
+                TimeSpan gapTime = dateTime - nowTime;
 
                 if(gapTime.Days > 0)
                 {
