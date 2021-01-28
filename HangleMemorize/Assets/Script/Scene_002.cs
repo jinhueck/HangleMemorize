@@ -135,6 +135,8 @@ public class Scene_002 : SceneBase
             DateTime nowTime = DateTime.Now;
             bool bEnableButton = true;
 
+            timeRemainingText.text = null;
+
             if (remainingTime != null && remainingTime != "")
             {
                 DateTime dateTime = DateTime.Parse(remainingTime);
@@ -157,10 +159,6 @@ public class Scene_002 : SceneBase
                     timeRemainingText.text = remainingText;
 
                     bEnableButton = false;
-                }
-                else
-                {
-                    timeRemainingText.text = null;
                 }
             }
 
