@@ -114,6 +114,8 @@ public class Scene_002 : SceneBase
         public Button button;
         public Text buttonText;
         public Text cardInfoText;
+        public Text totalCardInfoText;
+        public Text timeRemainingText;
 
         public float limitTime;
         public string remainingTime;
@@ -124,7 +126,8 @@ public class Scene_002 : SceneBase
 
         public void SetCardInfoText()
         {
-            cardInfoText.text = "카드 갯수 : " + cardDataList_Available.Count;
+            cardInfoText.text = "사용 가능 카드 갯수 : " + cardDataList_Available.Count;
+            totalCardInfoText.text = "총 카드 갯수 : " + (cardDataList_Available.Count + cardDataList_Unavailable.Count);
         }
 
         public void SetButtonEnable()
@@ -136,16 +139,35 @@ public class Scene_002 : SceneBase
             {
                 DateTime dateTime = DateTime.Parse(remainingTime);
                 TimeSpan gapTime = nowTime - dateTime;
-                int day = 0;
-                int hour = 0;
-                day = gapTime.Days;
-                hour = day * 24 + gapTime.Hours;
-                if (hour * 60 + gapTime.Minutes < limitTime)
+                int day = gapTime.Days;
+                int hour = day * 24 + gapTime.Hours;
+                int minute = gapTime.Minutes;
+
+                if (hour * 60 + minute < limitTime)
                 {
+                    int value = (int)limitTime - (hour * 60 + minute);
+                    int value_hour = value / 60;
+                    int value_minute = value % 60;
+                    string remainingText = null;
+                    if (value_hour > 0)
+                    {
+                        remainingText = hour.ToString() + "시간 ";
+                    }
+                    remainingText += (value_minute).ToString() + "분";
+                    timeRemainingText.text = remainingText;
+
                     bEnableButton = false;
                 }
+                else
+                {
+                    timeRemainingText.text = null;
+                }
             }
-            if(bFirst == true)
+
+            if (cardDataList_Available.Count == 0)
+                bEnableButton = false;
+
+            if (bFirst == true)
             {
                 bFirst = false;
                 button.enabled = bEnableButton;
@@ -162,8 +184,11 @@ public class Scene_002 : SceneBase
         {
             DateTime nowTime = DateTime.Now;
             changeDataList.Clear();
+            int pos = 0;
             foreach (var cardData in cardDataList_Unavailable)
             {
+                int presentPos = pos;
+                pos++;
                 string usedTime = cardData.usedTime;
                 if(usedTime == null || usedTime == "")
                 {
@@ -172,25 +197,27 @@ public class Scene_002 : SceneBase
                 }
 
                 DateTime dateTime = DateTime.Parse(usedTime);
-                TimeSpan gapTime = dateTime - nowTime;
+                TimeSpan gapTime = nowTime - dateTime;
 
-                if(gapTime.Days > 0)
+                int day = gapTime.Days;
+                int hour = gapTime.Hours + day * 24;
+                int minute = gapTime.Minutes;
+                
+                if (day > 0)
                 {
+                    changeDataList.Add(cardData);
                     continue;
                 }
-                if(gapTime.Hours > 0)
+                if(hour > 0)
                 {
+                    changeDataList.Add(cardData);
                     continue;
                 }
-                if(gapTime.Minutes > 0)
+                if(minute >= 10)
                 {
+                    changeDataList.Add(cardData);
                     continue;
                 }
-                if (gapTime.Seconds > 0)
-                {
-                    continue;
-                }
-                changeDataList.Add(cardData);
             }
 
             cardDataList_Available.AddRange(changeDataList);
