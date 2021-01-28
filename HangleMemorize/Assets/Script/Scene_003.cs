@@ -15,10 +15,15 @@ public class Scene_003 : SceneBase
 
     public Button successButton;
     public Button failButton;
-    public Button TurnButton;
+    public Button[] turnButtonArray;
 
     public Text InitialText;
     public Text originText;
+
+    private bool bFront = true;
+    public Animator animatorCardTurn;
+    public string animCardFront;
+    public string animCardBack;
 
     public override void InitScene()
     {
@@ -31,6 +36,14 @@ public class Scene_003 : SceneBase
         {
             CheckSuccessCard(false);
         });
+        foreach (var turnButton in turnButtonArray)
+        {
+            turnButton.onClick.AddListener(() =>
+            {
+                animatorCardTurn.Play(bFront ? animCardBack : animCardFront, 0, 0);
+                bFront = !bFront;
+            });
+        }
     }
 
     public override void SceneStart()
