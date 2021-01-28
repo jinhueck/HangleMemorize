@@ -17,6 +17,7 @@ public class Scene_003 : SceneBase
     public Button failButton;
     public Button[] turnButtonArray;
 
+    public Image cardImage;
     public Text InitialText;
     public Text originText;
 
@@ -24,6 +25,8 @@ public class Scene_003 : SceneBase
     public Animator animatorCardTurn;
     public string animCardFront;
     public string animCardBack;
+
+    public TextureStorage textureStorage;
 
     public override void InitScene()
     {
@@ -57,6 +60,8 @@ public class Scene_003 : SceneBase
 
     private void SetCardData()
     {
+        cardImage.sprite = textureStorage.GetSpriteInfo(currentCardData.cardImageName);
+        cardImage.SetNativeSize();
         originText.text = currentCardData.cardName;
         InitialText.text = currentCardData.cardInitialName;
     }
